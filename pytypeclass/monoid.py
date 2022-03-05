@@ -3,7 +3,7 @@ from __future__ import annotations
 import abc
 from typing import Protocol, Type, TypeVar
 
-from monad_argparse.monad.monad import Monad
+from pytypeclass import Monad
 
 A = TypeVar("A", covariant=True)
 B = TypeVar("B", covariant=True)

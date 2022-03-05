@@ -4,4 +4,4 @@ test:
 docs:
 	jupytext --sync readme.py
 	jupyter nbconvert --to markdown --execute readme.ipynb
-	pdoc3 --html monad_argparse --force
+	pdoc3 --html pytypeclass --force
