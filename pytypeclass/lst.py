@@ -4,7 +4,8 @@ import typing
 from dataclasses import dataclass
 from typing import Callable, Generator, TypeVar
 
-from monad_argparse.monad.monad import Monad
+from pytypeclass.monad import Monad
+
 
 A = TypeVar("A", covariant=True)
 B = TypeVar("B")

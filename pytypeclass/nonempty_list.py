@@ -3,7 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import Callable, Iterator, TypeVar
 
-from monad_argparse.monad.monad import Monad
+from pytypeclass.monad import Monad
+
 
 A = TypeVar("A", covariant=True)
 B = TypeVar("B", contravariant=True)

@@ -4,7 +4,8 @@ import abc
 from functools import partial
 from typing import Callable, Generator, Optional, Protocol, Type, TypeVar
 
-from monad_argparse.monad.stateless_iterator import StatelessIterator
+from pytypeclass.stateless_iterator import StatelessIterator
+
 
 A = TypeVar("A")
 B = TypeVar("B", bound="Monad")
