@@ -12,11 +12,8 @@ C = TypeVar("C", bound="Monoid")
 
 class Monoid(Protocol[A]):
     @abc.abstractmethod
-    def __add__(self: C, other: C) -> C:
+    def __or__(self: C, other: C) -> C:
         raise NotImplementedError
-
-    def __or__(self, other):
-        return self + other
 
     @classmethod
     @abc.abstractmethod
