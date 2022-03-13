@@ -29,13 +29,10 @@ class NonemptyList(Monad[A]):
     def __repr__(self):
         return repr(list(self))
 
-    def bind(self, f: Callable[[A], Monad[B]]) -> NonemptyList[B]:
+    def bind(self, f: Callable[[A], NonemptyList[B]]) -> NonemptyList[B]:  # type: ignore[override]
         def g() -> Iterator[B]:
             for x in self:
-                y = f(x)
-                if not isinstance(y, NonemptyList):
-                    raise TypeError("NonemptyList.bind: f must return a NonemptyList")
-                yield from y
+                yield from f(x)
 
         return NonemptyList.make(*g())
 

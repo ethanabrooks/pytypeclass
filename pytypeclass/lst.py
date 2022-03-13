@@ -45,13 +45,10 @@ class List(Monad[A]):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self.get)})"
 
-    def bind(self: List[A], f: Callable[[A], Monad[B]]) -> List[B]:
+    def bind(self: List[A], f: Callable[[A], List[B]]) -> List[B]:  # type: ignore[override]
         def g() -> Generator[B, None, None]:
             for x in self:
-                y = f(x)
-                if not isinstance(y, List):
-                    raise TypeError("List.bind: f must return a List")
-                yield from y
+                yield from f(x)
 
         return List(list(g()))
 

@@ -34,9 +34,9 @@ class Result(Monad[A]):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self.get)})"
 
-    def bind(
+    def bind(  # type: ignore[override]
         self,
-        f: Callable[[A], Monad1],
+        f: Callable[[A], Result[B]],
     ) -> Result[B]:
         if isinstance(self.get, Exception):
             return Result(self.get)

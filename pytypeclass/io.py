@@ -46,11 +46,8 @@ class IO(Monad[A]):
     def __repr__(self) -> str:
         return f"IO({self.get.__name__})"
 
-    def bind(self, f: Callable[[A], Monad[B]]) -> IO[B]:
-        y = f(self())
-        if not isinstance(y, IO):
-            raise TypeError("IO.bind: f must return an IO")
-        return y
+    def bind(self, f: Callable[[A], IO[B]]) -> IO[B]:  # type: ignore[override]
+        return f(self())
 
     @classmethod
     def do(  # type: ignore[override]

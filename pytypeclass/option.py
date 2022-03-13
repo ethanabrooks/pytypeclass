@@ -33,16 +33,13 @@ class Option(Monad[A]):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self.get)})"
 
-    def bind(
+    def bind(  # type: ignore[override]
         self,
-        f: Callable[[A], Monad[B]],
+        f: Callable[[A], Option[B]],
     ) -> Option[B]:
         if self.get is None:
             return Option(None)
-        y = f(self.get)
-        if not isinstance(y, Option):
-            raise TypeError("Option.bind: f must return an Option")
-        return y
+        return f(self.get)
 
     @classmethod
     def return_(cls, a: B) -> Option[B]:
