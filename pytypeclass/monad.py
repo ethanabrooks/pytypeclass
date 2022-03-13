@@ -6,11 +6,12 @@ from typing import Callable, Generator, Optional, Protocol, Type, TypeVar
 
 from pytypeclass.stateless_iterator import StatelessIterator
 
-
 A = TypeVar("A")
-B = TypeVar("B", bound="Monad")
-C = TypeVar("C", contravariant=True)
-D = TypeVar("D", bound="Monad")
+B = TypeVar("B")
+C = TypeVar("C")
+A_Monad = TypeVar("A_Monad", bound="Monad")
+A_cont = TypeVar("A_cont", contravariant=True)
+B_Monad = TypeVar("B_Monad", bound="Monad")
 
 
 class Monad(Protocol[A]):
@@ -23,11 +24,11 @@ class Monad(Protocol[A]):
     ```
     """
 
-    def __ge__(self, f):
+    def __ge__(self: Monad[B], f: Callable[[B], Monad[C]]) -> Monad[C]:
         return self.bind(f)
 
     @abc.abstractmethod
-    def bind(self: B, f: Callable[[A], B]) -> B:
+    def bind(self: Monad[B], f: Callable[[B], Monad[C]]) -> Monad[C]:
         ...
         """
         ```haskell
@@ -38,12 +39,12 @@ class Monad(Protocol[A]):
 
     @classmethod
     def do(
-        cls: Type[D],
-        generator: Callable[[], Generator[D, B, None]],
-    ) -> D:
-        def f(a: Optional[B], it: StatelessIterator[D, B]) -> D:
+        cls: Type[Monad[A]],
+        generator: Callable[[], Generator[Monad[A], A, None]],
+    ) -> Monad[A]:
+        def f(a: Optional[A], it: StatelessIterator[Monad[A], A]) -> Monad[A]:
             try:
-                it2: StatelessIterator[D, B]
+                it2: StatelessIterator[Monad[A], A]
                 if a is None:
                     ma, it2 = it.__next__()
                 else:
@@ -58,7 +59,7 @@ class Monad(Protocol[A]):
 
     @classmethod
     @abc.abstractmethod
-    def return_(cls: Type[D], a: A) -> D:  # type: ignore[misc]
+    def return_(cls: Type[Monad[A]], a: A) -> Monad[A]:  # type: ignore[misc]
         # see https://github.com/python/mypy/issues/6178#issuecomment-1057111790
         """
         ```haskell

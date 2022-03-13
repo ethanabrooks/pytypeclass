@@ -6,7 +6,6 @@ from typing import Callable, Generator, TypeVar
 
 from pytypeclass.monad import Monad
 
-
 A = TypeVar("A", covariant=True)
 B = TypeVar("B")
 C = TypeVar("C", contravariant=True)
@@ -46,12 +45,13 @@ class List(Monad[A]):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self.get)})"
 
-    def bind(  # type: ignore[override]
-        self: List[A], f: Callable[[A], List[B]]
-    ) -> List[B]:
+    def bind(self: List[A], f: Callable[[A], Monad[B]]) -> List[B]:
         def g() -> Generator[B, None, None]:
-            for y in self:
-                yield from f(y)
+            for x in self:
+                y = f(x)
+                if not isinstance(y, List):
+                    raise TypeError("List.bind: f must return a List")
+                yield from y
 
         return List(list(g()))
 

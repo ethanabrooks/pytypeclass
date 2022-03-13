@@ -5,7 +5,6 @@ from typing import Callable, TypeVar
 
 from pytypeclass.monad import Monad
 
-
 A = TypeVar("A", covariant=True)
 B = TypeVar("B", contravariant=True)
 
@@ -36,11 +35,14 @@ class Option(Monad[A]):
 
     def bind(
         self,
-        f: Callable[[A], Option[B]],
+        f: Callable[[A], Monad[B]],
     ) -> Option[B]:
         if self.get is None:
             return Option(None)
-        return f(self.get)
+        y = f(self.get)
+        if not isinstance(y, Option):
+            raise TypeError("Option.bind: f must return an Option")
+        return y
 
     @classmethod
     def return_(cls, a: B) -> Option[B]:

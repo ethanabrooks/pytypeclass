@@ -1,7 +1,7 @@
 from pytypeclass.io import IO
 from pytypeclass.lst import List
 from pytypeclass.monad import Monad
-from pytypeclass.monoid import Monoid, MonadPlus
+from pytypeclass.monoid import MonadPlus, Monoid
 from pytypeclass.option import Option
 from pytypeclass.result import Result
 

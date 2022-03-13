@@ -3,7 +3,7 @@ import doctest
 import unittest
 from abc import ABC, abstractmethod
 
-from pytypeclass import io, lst, monad, option, result, IO, List, Option, Result
+from pytypeclass import IO, List, Option, Result, io, lst, monad, option, result
 
 
 def load_tests(_, tests, __):

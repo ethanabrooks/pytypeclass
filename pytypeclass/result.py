@@ -5,9 +5,9 @@ from typing import Callable, TypeVar
 
 from pytypeclass.monad import Monad
 
-
 A = TypeVar("A", covariant=True)
 B = TypeVar("B", contravariant=True)
+Monad1 = TypeVar("Monad1", bound="Monad")
 
 
 @dataclass
@@ -36,11 +36,14 @@ class Result(Monad[A]):
 
     def bind(
         self,
-        f: Callable[[A], Result[B]],
+        f: Callable[[A], Monad1],
     ) -> Result[B]:
         if isinstance(self.get, Exception):
             return Result(self.get)
-        return f(self.get)
+        y = f(self.get)
+        if not isinstance(y, Result):
+            raise TypeError("Result.bind: f must return a Result")
+        return y
 
     @classmethod
     def return_(cls, a: B) -> Result[B]:

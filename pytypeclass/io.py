@@ -22,14 +22,15 @@ class IO(Monad[A]):
     ...     return 2
 
     >>> def io():
-    ...     x = yield returns_1_with_side_effects
-    ...     y = yield returns_2_with_side_effects
-    ...     yield lambda: print(x + y)
+    ...     x = yield IO(returns_1_with_side_effects)
+    ...     y = yield IO(returns_2_with_side_effects)
+    ...     yield IO(lambda: print(x + y))
     ...
     >>> IO.do(io)
     foo
     bar
     3
+    IO(return_)
     """
 
     get: Callable[[], A]
@@ -42,8 +43,14 @@ class IO(Monad[A]):
             return self.get() == other.get()
         return False
 
-    def bind(self, f: Callable[[A], IO[B]]) -> IO[B]:
-        return f(self())
+    def __repr__(self) -> str:
+        return f"IO({self.get.__name__})"
+
+    def bind(self, f: Callable[[A], Monad[B]]) -> IO[B]:
+        y = f(self())
+        if not isinstance(y, IO):
+            raise TypeError("IO.bind: f must return an IO")
+        return y
 
     @classmethod
     def do(  # type: ignore[override]
@@ -56,7 +63,7 @@ class IO(Monad[A]):
             try:
                 z = it.send(y)
             except StopIteration:
-                return y
+                return IO.return_(y)
 
             return cls.bind(z, f)
 
@@ -64,7 +71,10 @@ class IO(Monad[A]):
 
     @classmethod
     def return_(cls, a: C) -> IO[C]:
-        return IO(lambda: a)
+        def return_() -> C:
+            return a
+
+        return IO(return_)
 
 
 class I(IO[A]):
