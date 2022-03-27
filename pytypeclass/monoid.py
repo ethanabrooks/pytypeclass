@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import Protocol, Type, TypeVar
+from typing import Generic, Type, TypeVar
 
 from pytypeclass import Monad
 
@@ -10,7 +10,7 @@ B = TypeVar("B")
 A_co = TypeVar("A_co", covariant=True)
 
 
-class Monoid(Protocol[A_co]):
+class Monoid(Generic[A_co]):
     @abc.abstractmethod
     def __or__(self: Monoid[A], other: Monoid[B]) -> Monoid[A | B]:
         raise NotImplementedError

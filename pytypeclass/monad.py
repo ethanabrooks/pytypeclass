@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 from functools import partial
-from typing import Callable, Generator, Optional, Protocol, Type, TypeVar
+from typing import Callable, Generator, Generic, Optional, Type, TypeVar
 
 from pytypeclass.stateless_iterator import StatelessIterator
 
@@ -14,7 +14,7 @@ A_cont = TypeVar("A_cont", contravariant=True)
 B_Monad = TypeVar("B_Monad", bound="Monad")
 
 
-class Monad(Protocol[A]):
+class Monad(Generic[A]):
     """
     Monad laws:
     ```haskell
